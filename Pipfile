@@ -5,14 +5,18 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
-black = "*"
 
 [packages]
 line-bot-sdk = "*"
 flask = "*"
+gunicorn = "*"
+black = "*"
 
 [requires]
 python_version = "3.7"
 
 [scripts]
 start = "python src/main/app.py"
+
+[pipenv]
+allow_prereleases = true
