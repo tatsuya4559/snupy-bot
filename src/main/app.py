@@ -1,7 +1,9 @@
 import os
+from argparse import ArgumentParser
 
-from flask import Flask, request, abort
-
+from flask import (
+    Flask, request, abort
+)
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -14,11 +16,11 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN', ''))
-handler = WebhookHandler(os.environ.get('CHANNEL_SECRET', ''))
+line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN', None))
+handler = WebhookHandler(os.environ.get('CHANNEL_SECRET', None))
 
 
-@app.route("/callback", methods=['POST'])
+@app.route("/api/line/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
@@ -31,7 +33,6 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
@@ -45,4 +46,11 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    arg_parser = ArgumentParser(
+        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
+    )
+    arg_parser.add_argument('-p', '--port', default=8000, help='port')
+    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
+    options = arg_parser.parse_args()
+
+    app.run(debug=options.debug, port=options.port)
