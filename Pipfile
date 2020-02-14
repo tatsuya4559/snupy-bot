@@ -16,7 +16,7 @@ black = "*"
 python_version = "3.7"
 
 [scripts]
-start = "python src/main/app.py"
+start = "python src/main/app.py -d True"
 
 [pipenv]
 allow_prereleases = true

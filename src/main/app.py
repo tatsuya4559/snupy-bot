@@ -1,4 +1,5 @@
 import os
+import random
 from argparse import ArgumentParser
 
 from flask import (
@@ -16,8 +17,8 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN', None))
-handler = WebhookHandler(os.environ.get('CHANNEL_SECRET', None))
+line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN', ''))
+handler = WebhookHandler(os.environ.get('CHANNEL_SECRET', ''))
 
 
 @app.route("/api/line/callback", methods=['POST'])
@@ -39,10 +40,23 @@ def callback():
 
 
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
+def handle_text_message(event):
+    text = event.message.text
+    response_text = text
+
+    if text == 'maxim':
+        response_text = _choose_maxim()
+
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        TextSendMessage(text=response_text))
+
+
+def _choose_maxim():
+    maxim_file_path = os.path.join(app.root_path, 'resources', 'maxim.txt')
+    with open(maxim_file_path) as maxim_file:
+        maxims = maxim_file.readlines()
+        return maxims[random.randrange(0, len(maxims))]
 
 
 if __name__ == "__main__":
