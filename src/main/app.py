@@ -1,4 +1,5 @@
 import os
+import re
 import random
 from argparse import ArgumentParser
 
@@ -47,6 +48,9 @@ def handle_text_message(event):
     if text == 'maxim':
         response_text = _choose_maxim()
 
+    if _is_relevant_to_compliment(text):
+        response_text = 'えらい！！！'
+
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=response_text))
@@ -57,6 +61,12 @@ def _choose_maxim():
     with open(maxim_file_path) as maxim_file:
         maxims = maxim_file.readlines()
         return maxims[random.randrange(0, len(maxims))]
+
+
+def _is_relevant_to_compliment(text):
+    compliment_regex = r'(褒|ほ)めて|(頑張|がんば|がむば)った'
+    prog = re.compile(compliment_regex)
+    return bool(prog.search(text))
 
 
 if __name__ == "__main__":
