@@ -24,14 +24,9 @@ handler = WebhookHandler(os.environ.get('CHANNEL_SECRET', ''))
 
 @app.route("/api/line/callback", methods=['POST'])
 def callback():
-    # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-
-    # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
 
-    # handle webhook body
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -51,6 +46,9 @@ def handle_text_message(event):
     if _is_relevant_to_compliment(text):
         response_text = 'えらい！！！'
 
+    if _is_negative(text):
+        response_text = 'がむぱれ🐼'
+
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=response_text))
@@ -64,8 +62,14 @@ def _choose_maxim():
 
 
 def _is_relevant_to_compliment(text):
-    compliment_regex = r'(褒|ほ)めて|(頑張|がんば|がむば)った'
+    compliment_regex = r'(褒|ほ)めて|(頑張|がんば|がむば|がむぱ)った'
     prog = re.compile(compliment_regex)
+    return bool(prog.search(text))
+
+
+def _is_negative(text):
+    regex = r'(辛|つら)い|(頑張|がんば|がむば|がむぱ)る'
+    prog = re.compile(regex)
     return bool(prog.search(text))
 
 
