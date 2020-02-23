@@ -47,7 +47,7 @@ def handle_text_message(event):
         response_text = 'えらい！！！'
 
     if _is_negative(text):
-        response_text = 'がむぱれ🐼'
+        response_text = 'ぱにゃにゃんだー🐼😺'
 
     line_bot_api.reply_message(
         event.reply_token,
