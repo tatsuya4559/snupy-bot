@@ -31,6 +31,10 @@ def callback():
     return "OK"
 
 
+COMPLIMENT_PATTERN = re.compile(r"(褒|ほ)めて|(頑張|がんば|がむば|がむぱ)った")
+NEGATIVE_PATTERN = re.compile(r"(辛|つら)い|(頑張|がんば|がむば|がむぱ)る")
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
@@ -39,16 +43,16 @@ def handle_text_message(event):
     if text == "maxim":
         response_text = _choose_maxim()
 
-    if _is_relevant_to_compliment(text):
+    elif COMPLIMENT_PATTERN.search(text):
         response_text = "えらい！！！"
 
-    if _is_negative(text):
+    elif NEGATIVE_PATTERN.search(text):
         response_text = "ぱにゃにゃんだー🐼😺"
 
-    if text.startswith("choice"):
-        prog = re.compile(r"choice (?P<items>.*)")
-        m = prog.match(text)
-        response_text = _choose_one(m.group("items").split(","))
+    elif text.startswith("choice"):
+        regex = re.compile(r"choice (?P<items>.*)")
+        m = regex.match(text)
+        response_text = _choose_one(re.split(",|、", m.group("items")))
 
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response_text))
 
@@ -57,24 +61,12 @@ def _choose_maxim():
     maxim_file_path = os.path.join(app.root_path, "resources", "maxim.txt")
     with open(maxim_file_path) as maxim_file:
         maxims = maxim_file.readlines()
-        return maxims[random.randrange(0, len(maxims))]
-
-
-def _is_relevant_to_compliment(text):
-    compliment_regex = r"(褒|ほ)めて|(頑張|がんば|がむば|がむぱ)った"
-    prog = re.compile(compliment_regex)
-    return bool(prog.search(text))
-
-
-def _is_negative(text):
-    regex = r"(辛|つら)い|(頑張|がんば|がむば|がむぱ)る"
-    prog = re.compile(regex)
-    return bool(prog.search(text))
+        return random.choice(maxims)
 
 
 def _choose_one(options):
     chosen = random.choice(options)
-    return f"I choose this => {chosen.strip()}"
+    return f"I choose this 👉 {chosen.strip()}"
 
 
 if __name__ == "__main__":
