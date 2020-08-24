@@ -1,9 +1,8 @@
 import os
 import re
 import random
-from argparse import ArgumentParser
 
-from flask import Flask, request, abort
+from bottle import run, post, request, abort, default_app
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
@@ -12,16 +11,16 @@ from linebot.models import (
     TextSendMessage,
 )
 
-app = Flask(__name__)
+app = default_app()
 
-line_bot_api = LineBotApi(os.environ.get("CHANNEL_ACCESS_TOKEN", ""))
-handler = WebhookHandler(os.environ.get("CHANNEL_SECRET", ""))
+line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
+handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
 
-@app.route("/api/line/callback", methods=["POST"])
+@post("/api/line/callback")
 def callback():
-    signature = request.headers["X-Line-Signature"]
-    body = request.get_data(as_text=True)
+    signature = request.get_header("X-Line-Signature")
+    body = request.body.getvalue().decode()
 
     try:
         handler.handle(body, signature)
@@ -58,7 +57,7 @@ def handle_text_message(event):
 
 
 def _choose_maxim():
-    maxim_file_path = os.path.join(app.root_path, "resources", "maxim.txt")
+    maxim_file_path = os.path.join(os.getcwd(), "resources", "maxim.txt")
     with open(maxim_file_path) as maxim_file:
         maxims = maxim_file.readlines()
         return random.choice(maxims)
@@ -70,11 +69,4 @@ def _choose_one(options):
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(
-        usage="Usage: python " + __file__ + " [--port <port>] [--help]"
-    )
-    arg_parser.add_argument("-p", "--port", default=8000, help="port")
-    arg_parser.add_argument("-d", "--debug", default=False, help="debug")
-    options = arg_parser.parse_args()
-
-    app.run(debug=options.debug, port=options.port)
+    run(host="0.0.0.0", port=int(os.getenv("PORT", 8080)))

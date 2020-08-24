@@ -11,6 +11,7 @@ line-bot-sdk = "*"
 flask = "*"
 gunicorn = "*"
 black = "*"
+bottle = "*"
 
 [requires]
 python_version = "3.7"
