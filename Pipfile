@@ -5,12 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+pylint = "*"
+pytest = "*"
+black = "*"
 
 [packages]
 line-bot-sdk = "*"
 flask = "*"
 gunicorn = "*"
-black = "*"
 
 [requires]
 python_version = "3.7"
