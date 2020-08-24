@@ -1,6 +1,4 @@
 import os
-import re
-import random
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
@@ -11,6 +9,8 @@ from linebot.models import (
     TextMessage,
     TextSendMessage,
 )
+
+import messages
 
 app = Flask(__name__)
 
@@ -31,42 +31,10 @@ def callback():
     return "OK"
 
 
-COMPLIMENT_PATTERN = re.compile(r"(褒|ほ)めて|(頑張|がんば|がむば|がむぱ)った")
-NEGATIVE_PATTERN = re.compile(r"(辛|つら)い|(頑張|がんば|がむば|がむぱ)る")
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    text = event.message.text
-    response_text = text
-
-    if text == "maxim":
-        response_text = _choose_maxim()
-
-    elif COMPLIMENT_PATTERN.search(text):
-        response_text = "えらい！！！"
-
-    elif NEGATIVE_PATTERN.search(text):
-        response_text = "ぱにゃにゃんだー🐼😺"
-
-    elif text.startswith("choice"):
-        regex = re.compile(r"choice (?P<items>.*)")
-        m = regex.match(text)
-        response_text = _choose_one(re.split(",|、", m.group("items")))
-
+    response_text = messages.get_response_text(event.message.text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response_text))
-
-
-def _choose_maxim():
-    maxim_file_path = os.path.join(app.root_path, "resources", "maxim.txt")
-    with open(maxim_file_path) as maxim_file:
-        maxims = maxim_file.readlines()
-        return random.choice(maxims)
-
-
-def _choose_one(options):
-    chosen = random.choice(options)
-    return f"I choose this 👉 {chosen.strip()}"
 
 
 if __name__ == "__main__":
