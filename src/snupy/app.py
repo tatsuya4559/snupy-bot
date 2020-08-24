@@ -10,7 +10,7 @@ from linebot.models import (
     TextSendMessage,
 )
 
-from snupy.messages import get_response_text
+from messages import get_response_text
 
 app = Flask(__name__)
 
