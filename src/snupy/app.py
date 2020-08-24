@@ -10,7 +10,7 @@ from linebot.models import (
     TextSendMessage,
 )
 
-import messages
+from snupy.messages import get_response_text
 
 app = Flask(__name__)
 
@@ -33,7 +33,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    response_text = messages.get_response_text(event.message.text)
+    response_text = get_response_text(event.message.text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response_text))
 
 
