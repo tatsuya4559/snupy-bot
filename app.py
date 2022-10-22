@@ -9,7 +9,7 @@ from linebot.models import (
     TextSendMessage,
 )
 
-from messages import get_response_text
+from chalicelib.messages import get_response_text
 
 app = Chalice(app_name="snupy-bot")
 
