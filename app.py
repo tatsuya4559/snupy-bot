@@ -1,4 +1,5 @@
 import os
+from logging import getLogger
 
 from chalice import Chalice, BadRequestError
 from linebot import LineBotApi, WebhookHandler
@@ -13,6 +14,8 @@ from chalicelib.messages import get_response_text
 
 app = Chalice(app_name="snupy-bot")
 
+logger = getLogger(__name__)
+
 line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
@@ -22,10 +25,12 @@ def callback():
     request = app.current_request
     signature = request.headers["X-Line-Signature"]
     body = request.raw_body.decode()
+    logger.info(f"body: {body}")
 
     try:
         handler.handle(body, signature)
     except InvalidSignatureError as e:
+        logger.info("invalid signature error")
         raise BadRequestError("NG") from e
 
     return "OK"
