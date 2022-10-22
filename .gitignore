@@ -1,2 +1,4 @@
-.venv
-.vim
+.chalice/deployments/
+.chalice/venv/
+
+__pycache__
