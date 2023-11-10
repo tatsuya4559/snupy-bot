@@ -10,7 +10,7 @@ from linebot.models import (
     TextSendMessage,
 )
 
-from chalicelib.messages import get_response_text
+from chalicelib.llms import get_simple_response_by_bedrock
 
 app = Chalice(app_name="snupy-bot")
 
@@ -38,5 +38,5 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    response_text = get_response_text(event.message.text)
+    response_text = get_simple_response_by_bedrock(event.message.text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response_text))
