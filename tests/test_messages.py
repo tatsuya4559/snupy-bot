@@ -3,7 +3,15 @@ import pytest
 
 class TestGetResponseText:
     @pytest.mark.parametrize(
-        "message", [("つらい"), ("辛い"), ("頑張る"), ("がんばる"), ("がむばる"), ("がむぱる"),]
+        "message",
+        [
+            ("つらい"),
+            ("辛い"),
+            ("頑張る"),
+            ("がんばる"),
+            ("がむばる"),
+            ("がむぱる"),
+        ],
     )
     def test_negative_pattern(self, message):
         from chalicelib.messages import get_response_text
@@ -11,7 +19,15 @@ class TestGetResponseText:
         assert get_response_text(message) == "ぱにゃにゃんだー🐼😺"
 
     @pytest.mark.parametrize(
-        "message", [("褒めて"), ("ほめて"), ("頑張った"), ("がんばった"), ("がむばった"), ("がむぱった"),]
+        "message",
+        [
+            ("褒めて"),
+            ("ほめて"),
+            ("頑張った"),
+            ("がんばった"),
+            ("がむばった"),
+            ("がむぱった"),
+        ],
     )
     def test_compliment_pattern(self, message):
         from chalicelib.messages import get_response_text

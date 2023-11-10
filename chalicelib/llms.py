@@ -9,9 +9,7 @@ def get_simple_response_by_bedrock(message: str) -> str:
         model_id="anthropic.claude-v2",
         model_kwargs={"temperature": 0.1},
     )
-    messages = [
-        HumanMessage(content=message)
-    ]
+    messages = [HumanMessage(content=message)]
     resp = chat(messages)
     return resp.content
 
