@@ -1,4 +1,5 @@
 import os
+import json
 from logging import getLogger
 
 from linebot import LineBotApi, WebhookHandler
@@ -21,21 +22,16 @@ handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 def bad_request(message=""):
     return {
         "statusCode": 400,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {
-            "message": message
-        }
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({"message": message}),
     }
+
 
 def ok():
     return {
         "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {}
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({}),
     }
 
 
@@ -49,7 +45,7 @@ def lambda_handler(event, context):
 
     try:
         handler.handle(body, signature)
-    except InvalidSignatureError as e:
+    except InvalidSignatureError:
         logger.info("invalid signature error")
         return bad_request("invalid signature")
     return ok()
