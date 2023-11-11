@@ -2,20 +2,23 @@ import os
 import json
 from logging import getLogger
 
-from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError
-from linebot.models import (
-    MessageEvent,
+from linebot.v3 import WebhookHandler
+from linebot.v3.exceptions import InvalidSignatureError
+from linebot.v3.messaging import (
+    Configuration,
+    ApiClient,
+    MessagingApi,
+    ReplyMessageRequest,
     TextMessage,
-    TextSendMessage,
 )
+from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 from lib.llms import get_simple_response_by_bedrock
 
 
 logger = getLogger(__name__)
 
-line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
+configuration = Configuration(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
 
@@ -36,10 +39,7 @@ def ok():
 
 
 def lambda_handler(event, context):
-    headers = event["headers"]
-    signature = headers.get("X-Line-Signature")
-    if not signature:
-        return bad_request("signature not found")
+    signature = event["headers"]["X-Line-Signature"]
     body = event["body"]
     logger.info(f"body: {body}")
 
@@ -51,7 +51,14 @@ def lambda_handler(event, context):
     return ok()
 
 
-@handler.add(MessageEvent, message=TextMessage)
+@handler.add(MessageEvent, message=TextMessageContent)
 def handle_text_message(event):
     response_text = get_simple_response_by_bedrock(event.message.text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response_text))
+    with ApiClient(Configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        line_bot_api.reply_message_with_http_info(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=[TextMessage(text=response_text)],
+            )
+        )
