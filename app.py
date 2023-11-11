@@ -23,7 +23,7 @@ from lib.llms import get_simple_response_by_bedrock
 
 logger = getLogger(__name__)
 
-configuration = Configuration(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
+configuration = Configuration(access_token=os.getenv("CHANNEL_ACCESS_TOKEN", ""))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
 
