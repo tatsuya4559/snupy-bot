@@ -14,7 +14,7 @@ class TestGetResponseText:
         ],
     )
     def test_negative_pattern(self, message):
-        from chalicelib.messages import get_response_text
+        from lib.messages import get_response_text
 
         assert get_response_text(message) == "ぱにゃにゃんだー🐼😺"
 
@@ -30,17 +30,17 @@ class TestGetResponseText:
         ],
     )
     def test_compliment_pattern(self, message):
-        from chalicelib.messages import get_response_text
+        from lib.messages import get_response_text
 
         assert get_response_text(message) == "えらい！！！"
 
     def test_maxim(self):
-        from chalicelib.messages import get_response_text
+        from lib.messages import get_response_text
 
         assert get_response_text("maxim") != "maxim"
 
     def test_choice(self):
-        from chalicelib.messages import get_response_text
+        from lib.messages import get_response_text
 
         choices = ["hoge", "fuga", "piyo"]
         actual = get_response_text("choice " + ",".join(choices))
