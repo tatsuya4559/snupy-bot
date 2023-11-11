@@ -12,6 +12,7 @@ else
 	@echo 'docker already configured.'
 endif
 	poetry install
+	pre-commit install
 
 ### Test ###
 .PHONY: build
