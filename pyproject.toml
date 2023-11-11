@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "snupy-bot"
+version = "0.1.0"
+description = ""
+authors = ["tatsuya4559 <tatsuya.k1029@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.5"
+langchain = "^0.0.333"
+line-bot-sdk = "^3.5.0"
+boto3 = "^1.28.83"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.5"
+aws-sam-cli = "^1.101.0"
+pytest = "^7.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

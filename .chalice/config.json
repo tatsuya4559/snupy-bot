@@ -1,9 +1,0 @@
-{
-  "version": "2.0",
-  "app_name": "snupy-bot",
-  "stages": {
-    "prod": {
-      "api_gateway_stage": "api"
-    }
-  }
-}
