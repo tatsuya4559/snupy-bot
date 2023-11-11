@@ -4,9 +4,6 @@ from logging import getLogger
 
 import botocore
 import boto3
-print(f"botocore version = {botocore.__version__}")
-print(f"boto3 version = {boto3.__version__}")
-
 from linebot.v3 import WebhookHandler
 from linebot.v3.exceptions import InvalidSignatureError
 from linebot.v3.messaging import (
@@ -44,6 +41,8 @@ def ok():
 
 
 def lambda_handler(event, context):
+    print(f"botocore version = {botocore.__version__}")
+    print(f"boto3 version = {boto3.__version__}")
     print(json.dumps(event))
 
     signature = event["headers"]["x-line-signature"]
