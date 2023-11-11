@@ -20,25 +20,7 @@ handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
 def lambda_handler(event, context):
     signature = event["headers"]["X-Line-Signature"]
-    print(signature)
     body = event["body"]
-    logger.info(f"body: {body}")
-
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "body": {}
-    }
-
-
-"""
-@app.route("/api/line/callback", methods=["POST"])
-def callback():
-    request = app.current_request
-    signature = request.headers["X-Line-Signature"]
-    body = request.raw_body.decode()
     logger.info(f"body: {body}")
 
     try:
@@ -47,8 +29,13 @@ def callback():
         logger.info("invalid signature error")
         raise BadRequestError("NG") from e
 
-    return "OK"
-"""
+    return {
+        "statusCode": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {}
+    }
 
 
 @handler.add(MessageEvent, message=TextMessage)
