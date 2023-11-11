@@ -25,7 +25,7 @@ test: ## Run lambda in sam
 ### Deploy ###
 
 $(REQUIREMENTS): poetry.lock
-	poetry export --without-hashes --format=requirements.txt -o $@
+	poetry export --without-hashes | sed 's/;.*//' > $@
 
 deploy: $(REQUIREMENTS) $(PYTHON_MODULES) ## Deploy lambda
 	docker build -t snupy-bot/app .
