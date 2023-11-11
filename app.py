@@ -61,7 +61,7 @@ def lambda_handler(event, context):
 @handler.add(MessageEvent, message=TextMessageContent)
 def handle_text_message(event):
     response_text = get_simple_response_by_bedrock(event.message.text)
-    with ApiClient(Configuration) as api_client:
+    with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
         line_bot_api.reply_message_with_http_info(
             ReplyMessageRequest(
