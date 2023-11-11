@@ -39,7 +39,7 @@ def ok():
 
 
 def lambda_handler(event, context):
-    logger.info(json.dumps(event))
+    print(json.dumps(event))
 
     signature = event["headers"]["x-line-signature"]
     body = event["body"]
