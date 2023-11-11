@@ -24,6 +24,7 @@ test: ## Run lambda in sam
 
 ### Deploy ###
 
+# lambdaのpythonのパッチバージョンを揃えない
 $(REQUIREMENTS): poetry.lock
 	poetry export --without-hashes | sed 's/;.*//' > $@
 

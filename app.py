@@ -18,17 +18,18 @@ line_bot_api = LineBotApi(os.getenv("CHANNEL_ACCESS_TOKEN", ""))
 handler = WebhookHandler(os.getenv("CHANNEL_SECRET", ""))
 
 
-def lambda_handler(event, context):
-    signature = event["headers"]["X-Line-Signature"]
-    body = event["body"]
-    logger.info(f"body: {body}")
+def bad_request(message=""):
+    return {
+        "statusCode": 400,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "message": message
+        }
+    }
 
-    try:
-        handler.handle(body, signature)
-    except InvalidSignatureError as e:
-        logger.info("invalid signature error")
-        raise BadRequestError("NG") from e
-
+def ok():
     return {
         "statusCode": 200,
         "headers": {
@@ -36,6 +37,22 @@ def lambda_handler(event, context):
         },
         "body": {}
     }
+
+
+def lambda_handler(event, context):
+    headers = event["headers"]
+    signature = headers.get("X-Line-Signature")
+    if not signature:
+        return bad_request("signature not found")
+    body = event["body"]
+    logger.info(f"body: {body}")
+
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError as e:
+        logger.info("invalid signature error")
+        return bad_request("invalid signature")
+    return ok()
 
 
 @handler.add(MessageEvent, message=TextMessage)
