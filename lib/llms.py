@@ -28,9 +28,7 @@ def local_main():
     # agent_chain = create_agent_chain()
     # resp = agent_chain.run("Translate this sentence from English to French. I love programming.")
     # print(resp)
-    resp = get_simple_response_by_bedrock("スヌーピーの誕生日は？")
-    print(type(resp))
-    breakpoint()
+    resp = get_simple_response_by_bedrock("チャーリー・ブラウンの誕生日は？")
     print(resp)
 
 
