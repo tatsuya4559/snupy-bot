@@ -32,6 +32,7 @@ $(REQUIREMENTS): poetry.lock
 deploy: $(REQUIREMENTS) $(PYTHON_MODULES) ## Deploy lambda
 	docker build -t snupy-bot/app .
 	docker tag snupy-bot/app:latest $(IMAGE_TAG)
+	aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 327379428311.dkr.ecr.ap-northeast-1.amazonaws.com
 	docker push $(IMAGE_TAG)
 	aws lambda update-function-code --function-name $(LAMBDA_FUNC_NAME) --image-uri $(IMAGE_TAG)
 
